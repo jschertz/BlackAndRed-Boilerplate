@@ -12,27 +12,33 @@
 
 module.exports = {
 
-  /***************************************************************************
-   * Set the default database connection for models in the production        *
-   * environment (see config/connections.js and config/models.js )           *
-   ***************************************************************************/
-
-  // models: {
-  //   connection: 'someMysqlServer'
-  // },
-
-  /***************************************************************************
-   * Set the port in the production environment to 80                        *
-   ***************************************************************************/
-
-  // port: 80,
-
-  /***************************************************************************
-   * Set the log level in production environment to "silent"                 *
-   ***************************************************************************/
-
-  // log: {
-  //   level: "silent"
-  // }
-
+  connections: {
+    localDiskDb: {
+      adapter: 'sails-disk'
+    },
+    someMongodbServer: {
+      adapter: 'sails-mongo',
+      host: process.env.MONGO_HOST,
+      port: process.env.MONGO_PORT,
+      database: process.env.MONGO_DB,
+      user: process.env.MONGO_USER,
+      password: process.env.MONGO_PASS,
+    },
+  },
+  session: {
+    secret: 'e9393f7014364308a208735920dbfba7',
+    adapter: 'mongo',
+    host: process.env.MONGO_HOST,
+    port: process.env.MONGO_PORT,
+    db: process.env.MONGO_DB,
+    collection: 'sessions',
+    username: process.env.MONGO_USER,
+    password: process.env.MONGO_PASS,
+    auto_reconnect: true,
+    ssl: false,
+    stringify: true
+  },
+  log: {
+    level: 'error'
+  }
 };
