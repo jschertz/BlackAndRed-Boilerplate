@@ -1,3 +1,3 @@
-# bff
+# New App
 
 a [Sails](http://sailsjs.org) application

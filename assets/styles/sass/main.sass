@@ -1,0 +1,71 @@
+@import lib
+@import compass/css3/font-face
+@import compass
+@import settings/settings
+@import fonts/fonts
+@import layout/layout
+@import header/header
+@import modules/modules
+@import mobile/mobile
+@import mobile/tablet
+
+////////////////////////
+//	BASE
+////////////////////////
+
+html
+	+mq(784px, 100000px)
+		font-size: $base-font-size
+	+mq($md, 783px)
+		font-size: $base-font-size * .938
+	+mq($sm, $md)
+		font-size: $mobile-base-font-size
+
+/* CHECK */
+body
+	width: 100%
+	height: 100%
+
+/* Medium Devices, Desktops */
+// +mq($md, 100000px)
+// 	+generateSprites("desktop/buttons/*.png", false, $base-font-size)
+// 	+generateSprites("desktop/general/*.png")
+// 	+highDpi()
+// 		+generateSprites("desktop-retina/buttons/*.png", true, $base-font-size)
+// 		+generateSprites("desktop-retina/general/*.png", true)
+
+// /* Mobile */
+// +mq($sm, $md)
+// 	+generateSprites("mobile/buttons/*.png", true, $mobile-base-font-size)
+// 	+generateSprites("mobile/general/*.png", true, $mobile-base-font-size)
+
+// Base Setup
+*
+	box-sizing: border-box
+
+body, html
+	width: 100%
+	height: 100%
+
+body
+	background-color: white
+	-webkit-font-smoothing: antialiased
+	-moz-osx-font-smoothing: grayscale
+
+a
+	// color: $linkColor
+	text-decoration: none
+	display: inline-block
+	cursor: pointer
+	&:visited
+		color: white
+
+
+////////////////////////
+//	STATES
+////////////////////////
+
+.hide
+	display: none !important
+.active
+	display: block !important

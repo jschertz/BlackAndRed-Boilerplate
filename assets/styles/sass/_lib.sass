@@ -1,0 +1,148 @@
+////////////////////////
+//	LIBS
+////////////////////////
+@import "compass/css3/"
+@import "compass/utilities/"
+@import "compass/utilities/general/clearfix"
+@import "compass/utilities/sprites"
+@import "compass/reset"
+@import settings/settings
+
+@function em($target, $base: 16)
+	$num: strip-units($target/$base)
+	@return $num + 0em
+
+@function strip-units($number) 
+	@return $number / ($number * 0 + 1)
+
+@function rem($target, $base: 16)
+	$num: strip-units($target/$base)
+	@return $num + 0rem
+
+@function pct($number)
+	$num: strip-units($number)
+	@return $num * 100 + 0%
+
+////////
+// grid
+////////
+$gridWidth: rem(1040)
+$columnWidthDefault: rem(257)
+$gutterWidth: rem(4)
+@mixin span-columns($columns)
+	width: (($columnWidthDefault * $columns) + ($gutterWidth * ($columns - 1))) + 0rem
+	margin: 0 $gutterWidth $gutterWidth 0
+
+///////////////////
+// Mediaquries
+///////////////////
+@mixin mq($fromSize, $toSize)
+	@media only screen and (min-width : #{$fromSize}) and (max-width : #{($toSize - 1)})
+		@content
+
+@mixin highDpi()
+	@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 2/1), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx)
+		@content
+
+@mixin oriLand()
+	@media only screen and (orientation:landscape)
+		@content
+
+@mixin oriPort()
+	@media only screen and (orientation:portrait)
+		@content
+
+@mixin iPhone4()
+	@media only screen and (min-device-width: 320px) and (max-device-width: 480px) and (-webkit-device-pixel-ratio: 2) and (device-aspect-ratio: 2/3)
+		@content
+
+@mixin iPad()
+	@media only screen and (device-width: 768px) and (device-height: 1024px), only screen and (device-width: 1536px) and (device-height: 2048px)
+		@content
+
+@mixin widescreenTablet()
+	@media only screen and (device-aspect-ratio: 16/9), only screen and (device-aspect-ratio: 9/16), only screen and (device-aspect-ratio: 5/8), only screen and (device-aspect-ratio: 8/5), only screen and (min-device-aspect-ratio: 12/7) and (max-device-aspect-ratio: 7/4), only screen and (min-device-aspect-ratio: 7/12) and (max-device-aspect-ratio: 4/7)
+		@content
+
+///////////////////
+// SPRITES
+// Custom sprite conversion for responsive setups. Standard compass sprite will not work with inheritance structure.
+///////////////////
+
+@function filterHoverImages($spriteMap, $isHover: true)
+	$result: ()
+	@each $imageName in $spriteMap
+		@if $isHover
+			@if str-index($imageName, "_hover")
+				$result: append($result, $imageName)
+		@else
+			@if not str-index($imageName, "_hover")
+				$result: append($result, $imageName)
+	@return $result
+// modifers are to correct the fact that images that have a dimension that's not a power of base 2
+// may cause a pixel to be fractional, which browsers all render differently.  modifiers will
+// cause a background-size that will hopefully not be cut off
+@mixin generateSprites($path, $retina: false, $baseFont: 16, $widthModifier: 0, $heightModifier: 0)
+	$spriteMap: sprite-map($path, $spacing: 20px)
+	$spriteNames: sprite-names($spriteMap)
+	$spriteGroupName: sprite-map-name($spriteMap)
+
+	$mapPath: sprite-path($spriteMap)
+	
+	
+	$nonHoverspriteNames: filterHoverImages($spriteNames, false)
+	$hoverSpriteNames: filterHoverImages($spriteNames)
+
+	@each $spriteName in $nonHoverspriteNames
+		$spriteFile: sprite-file($spriteMap, $spriteName)
+		$hoverName: $spriteName + "_hover"
+		.#{$spriteGroupName}-#{$spriteName}
+			$spriteWidth: image-width($spriteFile)
+			$spriteHeight: image-height($spriteFile)
+			//$mapWidth: image-width(sprite-path($spriteMap)
+			//$mapHeight: image-width(sprite-path($spriteMap)
+			@if $retina
+				background: sprite($spriteMap, $spriteName, 0, 0, true)
+				//background-image: sprite-url($spriteMap)
+				background-size: pct(((image-width(sprite-path($spriteMap))+$widthModifier) / $spriteWidth)) pct(((image-height(sprite-path($spriteMap))+$heightModifier) / $spriteHeight))
+				//background-position: pct(round(nth(sprite-position($spriteMap, $spriteName), 1)) / $spriteWidth) pct(round(nth(sprite-position($spriteMap, $spriteName), 2)) / $spriteWidth)
+				height: rem(image-height(sprite-file($spriteMap, $spriteName)) / 2, $baseFont)
+				width: rem(image-width(sprite-file($spriteMap, $spriteName)) / 2, $baseFont)
+				@if index($hoverSpriteNames, $hoverName)
+					&:hover
+						background-position: round(nth(sprite-position($spriteMap, $hoverName), 1) / 2) round(nth(sprite-position($spriteMap, $hoverName), 2) / 2)
+						height: rem(image-height(sprite-file($spriteMap, $hoverName)) / 2, $baseFont)
+						width: rem(image-width(sprite-file($spriteMap, $hoverName)) / 2, $baseFont)
+			@else
+				background: sprite($spriteMap, $spriteName, 0, 0, true)
+				background-size: pct(((image-width(sprite-path($spriteMap))+$widthModifier) / $spriteWidth)) pct(((image-height(sprite-path($spriteMap))+$heightModifier) / $spriteHeight))
+				width: rem(image-width($spriteFile), $baseFont)
+				height: rem(image-height($spriteFile), $baseFont)
+				@if index($hoverSpriteNames, $hoverName)
+					&:hover
+						background-position: sprite-position($spriteMap, $hoverName)
+						height: rem(image-height(sprite-file($spriteMap, $hoverName)), $baseFont)
+						width: rem(image-width(sprite-file($spriteMap, $hoverName)), $baseFont)
+
+=gifBackground($name, $width: rem(518), $mobileWidth: 100%)
+	+singleImageBackground('gifs', $name, 'gif', $width, $mobileWidth)
+
+=poster($name, $width: rem(518), $mobileWidth: 100%)
+	+singleImageBackground('posters', $name, 'jpg', $width, $mobileWidth)
+
+=jtj($name, $width: rem(257), $mobileWidth: 100%, $height: rem(366))
+	+singleImageBackground('photos', $name, 'jpg', $width, $mobileWidth)
+	height: $height
+	+mq($sm, $md)
+		height: 0
+		padding-top: 123.75%
+
+=singleImageBackground($folder, $name, $ext: 'png', $width: rem(518), $mobileWidth: 100%)
+	background: image-url('desktop/#{$folder}/#{$name}.#{$ext}', false, false) top left no-repeat
+	background-size: 100% 100%
+	width: $width
+	+highDpi
+		background-image: image-url('desktop-retina/#{$folder}/#{$name}.#{$ext}', false, false)
+	+mq($sm, $md)
+		background-image: image-url('mobile/#{$folder}/#{$name}.#{$ext}', false, false)
+		width: $mobileWidth

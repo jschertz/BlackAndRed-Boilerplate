@@ -12,19 +12,26 @@
  *
  */
 module.exports = function(grunt) {
+	// get the date to be used as a version number during build to 
+	// ensure the client always gets the latest css and js
+	// we only care about the year, month, date, hours, and minutes
+	var version = new Date().toISOString().slice(0, 16)
+		.replace(/-/g, '')
+		.replace(/T/gi, '')
+		.replace(/:/g, '');
 
 	grunt.config.set('sails-linker', {
 		devJs: {
 			options: {
 				startTag: '<!--SCRIPTS-->',
 				endTag: '<!--SCRIPTS END-->',
-				fileTmpl: '<script src="%s"></script>',
+				fileTmpl: '<script data-main="js/init" src="%s"></script>',
 				appRoot: '.tmp/public'
 			},
 			files: {
-				'.tmp/public/**/*.html': require('../pipeline').jsFilesToInject,
-				'views/**/*.html': require('../pipeline').jsFilesToInject,
-				'views/**/*.ejs': require('../pipeline').jsFilesToInject
+				'.tmp/public/**/*.html': ['.tmp/public/js/bower_components/requirejs/require.js'],
+				'views/**/*.html': ['.tmp/public/js/bower_components/requirejs/require.js'],
+				'views/**/*.ejs': ['.tmp/public/js/bower_components/requirejs/require.js']
 			}
 		},
 
@@ -32,14 +39,14 @@ module.exports = function(grunt) {
 			options: {
 				startTag: '<!--SCRIPTS-->',
 				endTag: '<!--SCRIPTS END-->',
-				fileTmpl: '<script src="%s"></script>',
+				fileTmpl: '<script data-main="js/init" src="%s"></script>',
 				appRoot: '.tmp/public',
 				relative: true
 			},
 			files: {
-				'.tmp/public/**/*.html': require('../pipeline').jsFilesToInject,
-				'views/**/*.html': require('../pipeline').jsFilesToInject,
-				'views/**/*.ejs': require('../pipeline').jsFilesToInject
+				'.tmp/public/**/*.html': ['.tmp/public/js/bower_components/requirejs/require.js'],
+				'views/**/*.html': ['.tmp/public/js/bower_components/requirejs/require.js'],
+				'views/**/*.ejs': ['.tmp/public/js/bower_components/requirejs/require.js']
 			}
 		},
 
@@ -47,7 +54,7 @@ module.exports = function(grunt) {
 			options: {
 				startTag: '<!--SCRIPTS-->',
 				endTag: '<!--SCRIPTS END-->',
-				fileTmpl: '<script src="%s"></script>',
+				fileTmpl: '<script async="async" src="%s?v='+version+'"></script>',
 				appRoot: '.tmp/public'
 			},
 			files: {
@@ -61,7 +68,7 @@ module.exports = function(grunt) {
 			options: {
 				startTag: '<!--SCRIPTS-->',
 				endTag: '<!--SCRIPTS END-->',
-				fileTmpl: '<script src="%s"></script>',
+				fileTmpl: '<script async="async" src="%s?v='+version+'"></script>',
 				appRoot: '.tmp/public',
 				relative: true
 			},
@@ -107,7 +114,7 @@ module.exports = function(grunt) {
 			options: {
 				startTag: '<!--STYLES-->',
 				endTag: '<!--STYLES END-->',
-				fileTmpl: '<link rel="stylesheet" href="%s">',
+				fileTmpl: '<link rel="stylesheet" href="%s?v='+version+'">',
 				appRoot: '.tmp/public'
 			},
 			files: {
@@ -121,7 +128,7 @@ module.exports = function(grunt) {
 			options: {
 				startTag: '<!--STYLES-->',
 				endTag: '<!--STYLES END-->',
-				fileTmpl: '<link rel="stylesheet" href="%s">',
+				fileTmpl: '<link rel="stylesheet" href="%s?v='+version+'">',
 				appRoot: '.tmp/public',
 				relative: true
 			},

@@ -67,7 +67,6 @@ config/local.js
 ################################################
 
 node_modules
-bower_components
 
 
 
@@ -80,6 +79,7 @@ bower_components
 ################################################
 .tmp
 dump.rdb
+assets/require.js
 
 
 
@@ -97,6 +97,7 @@ lib-cov
 *.out
 *.pid
 npm-debug.log
+#bower_components
 
 
 
@@ -116,3 +117,4 @@ npm-debug.log
 nbproject
 .idea
 .node_history
+.sass-cache

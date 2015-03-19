@@ -1,0 +1,19 @@
+{
+  "name": "bff",
+  "version": "0.0.0",
+  "dependencies": {
+    "jquery": "~1.9.0",
+    "requirejs": "~2.1.5",
+    "requirejs-text": "~2.0.5",
+    "backbone-amd": "~1.1.0",
+    "underscore-amd": "~1.5.2",
+    "modernizr": "~2.8.3",
+    "backbone.marionette": "~2.2.1",
+    "require-handlebars-plugin": "~0.8.1",
+    "moment": "~2.8.3",
+    "matchMedia": "~0.2.0",
+    "enquire": "~2.1.2"
+  },
+  "devDependencies": {},
+  "directory": "bower_components"
+}
